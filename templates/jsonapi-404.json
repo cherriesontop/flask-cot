@@ -3,8 +3,7 @@
     {
       "status": "404",
       "title":  "Not Found",
-      "detail": "{{ detail }}"{% if source is not none %},
-      "source": { {{ source }} },{% endif %}
+      "detail": "{{ detail }}"
     }
   ]
 }

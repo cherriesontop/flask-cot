@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "status": "401",
+      "title":  "Unauthorised",
+      "detail": "{{ detail }}",{% if source is not none %}
+      "source": { {{ source }} },{% endif %}{% if code is not none %}
+      "code": { "{{ code }}" },{% endif %}{% if docs is not none %}
+      "links": {
+          "about": "{{ docs }}"
+      },{% endif %}
+    }
+  ]
+}

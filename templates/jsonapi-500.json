@@ -1,0 +1,10 @@
+{
+  "errors": [
+    {
+      "status": "500",
+      "title":  "Internal Server Error - Sorry :(",
+      "detail": "{{ detail }}"{% if source is not none %},
+      "source": { {{ source }} },{% endif %}
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import copy
-import json
+import simplejson as json
 
 from flask import Response, current_app, render_template, g, \
     escape, request

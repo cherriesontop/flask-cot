@@ -43,7 +43,7 @@ class Leaderboard(BaseModel):
         _return_position=True
             ):
         if leaderboard_id is None:
-            leaderboard_id = self._id
+            leaderboard_id = self.id
         print('Leaderboad id is ' + leaderboard_id)
         if leaderboard_id is None:
             raise ValueError('No Leaderboard id set.')
@@ -75,7 +75,7 @@ class Leaderboard(BaseModel):
         dim_5=None,
             ):
         filter_group = []
-        filter_group.append(text("leaderboard_id='"+self._id+"'"))
+        filter_group.append(text("leaderboard_id='"+self.id+"'"))
         if dim_1:
             filter_group.append(text("_dim_1=" + str(dim_1)))
         if dim_2:
@@ -114,43 +114,3 @@ class Leaderboard(BaseModel):
             ob.append(i)
 
         return ob
-
-
-"""
-    def get_top_around_entry(
-        self,
-        leaderboardentry_id,
-        limit=10,
-        dim_1=None,
-        dim_2=None,
-        dim_3=None,
-        dim_4=None,
-        dim_5=None,
-            ):
-        filter_group = []
-        filter_group.append(text("leaderboard_id='"+self._id+"'"))
-        if dim_1:
-            filter_group.append(text("_dim_1=" + str(dim_1)))
-        if dim_2:
-            filter_group.append(text("_dim_2=" + str(dim_2)))
-        if dim_3:
-            filter_group.append(text("_dim_3=" + str(dim_3)))
-        if dim_4:
-            filter_group.append(text("_dim_4='" + self.data['_dim_4'] + "'"))
-        if dim_5:
-            filter_group.append(text("_dim_5='" + self.data['_dim_5'] + "'"))
-
-        order_group = []
-        order_group.append(text('score_a desc'))
-
-        objs = LeaderboardEntryDb.query.filter(and_(*filter_group)).order_by(*order_group).limit(limit).offset(offset)
-        ob = []
-        pos = offset
-        for o in objs:
-            pos += 1
-            i = o.to_dict()
-            i['position'] = pos
-            ob.append(i)
-
-        return ob
-"""

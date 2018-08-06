@@ -30,11 +30,11 @@ class LeaderboardEntry(BaseModel):
         score_b=None,
     ):
         leaderboard_id = str(leaderboard_id)
-        self._id = str(uuid.uuid4())
-        print('Create LBE ' + self._id)
+        self.id = str(uuid.uuid4())
+        print('Create LBE ' + self.id)
         self.data.update(
             {
-                'id': self._id,
+                'id': self.id,
                 'leaderboard_id': leaderboard_id,
                 '_dim_1': dim_1,
                 '_dim_2': dim_2,
@@ -51,7 +51,7 @@ class LeaderboardEntry(BaseModel):
         )
         # TODO: add verification
         new = LeaderboardEntryDb(
-            id=self._id,
+            id=self.id,
             leaderboard_id=leaderboard_id,
             _dim_1=dim_1,
             _dim_2=dim_2,
@@ -66,7 +66,7 @@ class LeaderboardEntry(BaseModel):
         )
         db.session.add(new)
         db.session.commit()
-        self.load(self._id)
+        self.load(self.id)
 
     def get_position(
         self,

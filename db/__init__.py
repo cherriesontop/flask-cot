@@ -9,14 +9,11 @@ class CotModel(Model):
     def to_dict(self):
         keys = self.__table__.columns
         offset = len(self.__tablename__) + 1
-        # print('offset is ' + str(offset))
-        obj = {}
+        objj = {}
         for key in keys:
-            # print('key is ' + str(key))
             trimed_key = str(key)[offset:]
-            # print('trimmed key is ' + trimed_key)
-            obj[trimed_key] = self.__dict__[trimed_key]
-        return obj
+            objj[trimed_key] = self.__dict__[trimed_key]
+        return objj
 
     def day_id(epoch=None):
         if epoch is None:

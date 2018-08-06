@@ -2,18 +2,31 @@ import time
 from flask_cot.db import db
 
 
+class CotMeta(object):
+    _cot_has_metadata = db.Column(
+        db.Integer(),
+        default=0,
+        nullable=False
+    )
+    _cot_archive_id = db.Column(
+        db.Integer(),
+        default=0,
+        onupdate=2,
+        nullable=False
+    )
+
 
 class TimestampMixin(object):
     """
-    Provides the :attr:`created_at` and :attr:`updated_at` audit timestamps
+    Provides the :attr:`created` and :attr:`updated` audit timestamps
     """
-    #: Timestamp for when this instance was created, in UTC
+    # Timestamp for when this instance was created, in UTC
     created = db.Column(
         db.Integer(),
         default=time.time,
         nullable=False
     )
-    #: Timestamp for when this instance was last updated (via the app), in UTC
+    # Timestamp for when this instance was last updated (via the app), in UTC
     updated = db.Column(
         db.Integer(),
         default=time.time,
@@ -23,7 +36,11 @@ class TimestampMixin(object):
 
 
 class CRUDMixin(object):
-    __table_args__ = {'extend_existing': True}
+    # __table_args__ = {'extend_existing': True}
+
+    @classmethod
+    def get_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()
 
     """
     @classmethod

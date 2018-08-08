@@ -88,7 +88,6 @@ class Jwt:
         return user
 
     def build(self):
-        print('build='+self.id)
         params = {
             'id': self.id,
             'iat': self.iat,

@@ -44,7 +44,6 @@ class Leaderboard(BaseModel):
             ):
         if leaderboard_id is None:
             leaderboard_id = self.id
-        print('Leaderboad id is ' + leaderboard_id)
         if leaderboard_id is None:
             raise ValueError('No Leaderboard id set.')
         # TODO: check for multy entry

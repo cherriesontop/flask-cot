@@ -62,7 +62,6 @@ def jsonapi_errors(
     if len(msg['errors']) is 1:
         if manual_code:
             msg['errors'][0].update({'code': manual_code})
-            print('Add code')
         if manual_doc:
             msg['errors'][0].update(
                 {

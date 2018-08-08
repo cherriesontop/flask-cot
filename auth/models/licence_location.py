@@ -42,8 +42,6 @@ class LicenceLocationDb(TimestampMixin, CRUDMixin, db.Model):
     lat_br = db.Column(db.DECIMAL(precision=9, scale=6))
     long_br = db.Column(db.DECIMAL(precision=9, scale=6))
     _active_status_id = db.Column(db.INTEGER(), nullable=True)
-    
-    # ac = orm.relationship(AccessCodeDb, backref=orm.backref('locations', uselist=True))
 
     def __repr__(self):
         return '<LicenceLocation id=%r>' % self.id

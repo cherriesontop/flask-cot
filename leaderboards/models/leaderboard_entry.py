@@ -31,7 +31,6 @@ class LeaderboardEntry(BaseModel):
     ):
         leaderboard_id = str(leaderboard_id)
         self.id = str(uuid.uuid4())
-        print('Create LBE ' + self.id)
         self.data.update(
             {
                 'id': self.id,
@@ -157,8 +156,6 @@ class LeaderboardEntry(BaseModel):
             _pref_score_b_direction=_pref_score_b_direction,
             _pref_created_direction=_pref_created_direction
         )
-        print('Position is ' + str(pos))
-        print('limit is ' + str(limit))
         lbes = []
         entry_pos = copy.deepcopy(pos)
         before_pos = copy.deepcopy(pos)
@@ -253,7 +250,6 @@ class LeaderboardEntry(BaseModel):
             # entry_pos = len(tmp)
             lbes.extend(reversed(tmp))
         self.data['selected'] = True
-        print(self.data)
         lbes.append(self.data)
         # reset things for items afterwards
         filter_group = []
@@ -340,15 +336,6 @@ class LeaderboardEntry(BaseModel):
         required_gap = limit//2
         first_gap = entry_pos - before_pos
         last_gap = after_pos - entry_pos
-        print('required gap=' + str(required_gap))
-        print('first gap=' + str(first_gap))
-        print('last gap=' + str(last_gap))
-
-        print(
-            'before_pos=' + str(before_pos) +
-            ' entry_pos=' + str(entry_pos) +
-            ' after_pos=' + str(after_pos)
-        )
         if first_gap <= required_gap:
             return lbes[0:limit - 1]
         if last_gap <= required_gap:

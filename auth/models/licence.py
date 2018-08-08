@@ -35,7 +35,6 @@ class Licence(BaseModel):
         self.reset()
         if id:
             self.load(id)
-            print('loaded licence ' + str(id))
 
     def requires_location(self):
         if self.id.startswith('1'):

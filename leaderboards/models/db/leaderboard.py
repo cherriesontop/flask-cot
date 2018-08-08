@@ -31,7 +31,7 @@ class LeaderboardDb(db.Model):
 
     @orm.reconstructor
     def init_on_load(self):
-        print('After')
+        pass
 
     def get_by_org(org_id):
         return LeaderboardDb.query.filter_by(organisation_id=org_id).all()

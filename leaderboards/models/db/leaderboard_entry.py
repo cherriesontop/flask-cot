@@ -26,7 +26,7 @@ class LeaderboardEntryDb(TimestampMixin, CRUDMixin, db.Model):
 
     @orm.reconstructor
     def init_on_load(self):
-        print('After')
+        pass
 
     def get_by_id(id):
         return LeaderboardEntryDb.query.filter_by(id=id).first()

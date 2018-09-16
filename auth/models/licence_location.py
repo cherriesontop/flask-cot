@@ -5,7 +5,7 @@ from marshmallow_jsonapi.flask import Schema
 
 from flask_cot.db.mixins import TimestampMixin, CRUDMixin
 from flask_cot.db import db
-from flask_cot.core.models import BaseModel
+from flask_cot.db.models import BaseModel
 
 # from augxpapi.core.models.access_code import AccessCodeDb
 
@@ -33,8 +33,8 @@ class LicenceLocationSchema(Schema):
 class LicenceLocationDb(TimestampMixin, CRUDMixin, db.Model):
     def __init__(self):
         super(LicenceLocationDb, self).__init__()
-
-    __tablename__ = 'cot_licence_locations'
+    __abstract__ = True
+    __base_tablename__ = 'cot_licence_locations'
     id = db.Column(db.CHAR(36), primary_key=True)
     licence_id = db.Column(db.CHAR(36))  # , ForeignKey(AccessCodeDb.id))
     lat_tl = db.Column(db.DECIMAL(precision=9, scale=6))
@@ -50,7 +50,7 @@ class LicenceLocationDb(TimestampMixin, CRUDMixin, db.Model):
 class LicenceLocation(BaseModel):
     def __init__(self, id=None):
         super(LicenceLocation, self).__init__()
-        self._db_model = LicenceLocationDb
+        self._db_model = self._get_db_model(LicenceLocationDb)
         self.reset()
         if id:
             self.load(id)
@@ -59,7 +59,7 @@ class LicenceLocation(BaseModel):
 class LicenceLocations(BaseModel):
     def __init__(self):
         super(LicenceLocations, self).__init__()
-        self._db_model = LicenceLocationDb
+        self._db_model = self._get_db_model(LicenceLocationDb)
         self.reset()
 
     def within_geofence(self, licence_id, loc_lat, loc_long, mode='simple'):

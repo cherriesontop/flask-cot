@@ -39,6 +39,8 @@ def jsonapi_unauthorised(detail, source=None, code=None, docs=''):
 
 def jsonapi_internal_error(e):
     # TODO: add logging
+    print("\n\nInternal error")
+    print(e)
     return jsonapi_wrapper(
         render_template(
             'jsonapi-500.json',
@@ -47,6 +49,7 @@ def jsonapi_internal_error(e):
         ),
         status=500
     )
+    
 
 
 def jsonapi_errors(

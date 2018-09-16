@@ -13,11 +13,13 @@ class CotException(Exception):
         self.errors = errors
 
 
-class NotImplementedYet(Exception):
+class NotImplementedYet(CotException):
     def __init__(self, message='', errors=None, log_level=logging.ERROR):
         super().__init__(
             'NotImplementedYet in ' +
             message +
-            inspect.stack()[1][3]
+            inspect.stack()[1][3],
+            errors=errors,
+            log_level=log_level
         )
         self.errors = errors

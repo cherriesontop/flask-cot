@@ -15,7 +15,8 @@ class AuthException(CotException):
     def __init__(self, message='', errors=None, log_level=logging.NOTSET):
         super().__init__(
             message,
-            errors
+            errors,
+            log_level=log_level
         )
 
 
@@ -26,7 +27,8 @@ class LicenceException(AuthException):
     def __init__(self, message='', errors=None, log_level=logging.NOTSET):
         super().__init__(
             message,
-            errors
+            errors,
+            log_level=log_level
         )
 
 
@@ -34,7 +36,8 @@ class LicenceNotFoundException(LicenceException):
     def __init__(self, message='', errors=None, log_level=logging.WARNING):
         super().__init__(
             message,
-            errors
+            errors,
+            log_level=log_level
         )
 
 
@@ -42,7 +45,8 @@ class LicenceNotActiveException(LicenceException):
     def __init__(self, message='', errors=None, log_level=logging.INFO):
         super().__init__(
             message,
-            errors
+            errors,
+            log_level=log_level
         )
 
 
@@ -53,5 +57,6 @@ class UserException(AuthException):
     def __init__(self, message='', errors=None, log_level=logging.NOTSET):
         super().__init__(
             message,
-            errors
+            errors,
+            log_level=log_level
         )

@@ -6,14 +6,14 @@ from marshmallow_jsonapi.flask import Schema
 
 from flask_cot.db.mixins import TimestampMixin, CRUDMixin
 from flask_cot.db import db
-from flask_cot.core.models import BaseModel
+from flask_cot.db.models import BaseModel
 
 
 class LicenceDb(TimestampMixin, CRUDMixin, db.Model):
     def __init__(self):
         super(LicenceDb, self).__init__()
-
-    __tablename__ = 'cot_licences'
+    __abstract__ = True
+    __base_tablename__ = 'cot_licences'
     id = db.Column(db.CHAR(36), primary_key=True)
     name = db.Column(db.VARCHAR(255), nullable=False)
     master_metadata = db.Column(db.TEXT, nullable=True)
@@ -31,7 +31,7 @@ class LicenceDb(TimestampMixin, CRUDMixin, db.Model):
 class Licence(BaseModel):
     def __init__(self, id=None):
         super(Licence, self).__init__()
-        self._db_model = LicenceDb
+        self._db_model = self._get_db_model(LicenceDb)
         self.reset()
         if id:
             self.load(id)

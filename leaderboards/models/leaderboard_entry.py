@@ -1,6 +1,6 @@
 from .db.leaderboard_entry import LeaderboardEntryDb
 from flask_cot.db import db
-from flask_cot.core.models import BaseModel
+from flask_cot.db.models import BaseModel
 import uuid
 import copy
 from sqlalchemy import and_, text

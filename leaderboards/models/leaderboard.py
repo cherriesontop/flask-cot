@@ -3,7 +3,7 @@ from .leaderboard_entry import LeaderboardEntry
 from .db.leaderboard_entry import LeaderboardEntryDb
 import flask_cot.exceptions as Exceptions
 from sqlalchemy import and_, text
-from flask_cot.core.models import BaseModel
+from flask_cot.db.models import BaseModel
 
 class Leaderboard(BaseModel):
     """docstring for Leaderboard.

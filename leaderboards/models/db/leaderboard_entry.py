@@ -6,8 +6,8 @@ from flask_cot.db.mixins import TimestampMixin, CRUDMixin
 
 class LeaderboardEntryDb(TimestampMixin, CRUDMixin, db.Model):
     """docstring for LeaderboardEntry."""
-
-    __tablename__ = 'leaderboard_entries'
+    __abstract__ = True
+    __base_tablename__ = 'leaderboard_entries'
     id = db.Column(db.CHAR(36), nullable=False, primary_key=True)
     leaderboard_id = db.Column(db.CHAR(36), nullable=True)
     _dim_1 = db.Column(db.Integer(), nullable=True)
@@ -23,10 +23,3 @@ class LeaderboardEntryDb(TimestampMixin, CRUDMixin, db.Model):
 
     def __repr__(self):
         return '<LeaderboardEntry %r %r>' % self.display_name, self.id
-
-    @orm.reconstructor
-    def init_on_load(self):
-        pass
-
-    def get_by_id(id):
-        return LeaderboardEntryDb.query.filter_by(id=id).first()

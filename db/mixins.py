@@ -11,7 +11,7 @@ class CotMeta(object):
     _cot_archive_id = db.Column(
         db.Integer(),
         default=0,
-        onupdate=2,
+        onupdate=0,
         nullable=False
     )
 

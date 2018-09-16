@@ -15,6 +15,12 @@ class CotRequest():
         self.log_max_level = 0
         self.log_counter = 0
         self.log_queue = []
+        self.log_triggered = False
+
+        if 'COT_LOGGER_MODE' in current_app.config:
+            self.log_mode = current_app.config['COT_LOGGER_MODE']
+        else:
+            self.log_mode = 'DEFAULT'
 
         if 'COT_LOGGER_LEVEL' in current_app.config:
             self.log_level = current_app.config['COT_LOGGER_LEVEL']
@@ -56,33 +62,65 @@ class CotRequest():
         )
 
     def debug(self, message, trace=None, code=None):
-        if self.log_level <= logging.DEBUG:
-            self.log(logging.DEBUG, message=message, trace=trace, code=code)
+        self.log(logging.DEBUG, message=message, trace=trace, code=code)
 
     def info(self, message, trace=None, code=None):
-        if self.log_level <= logging.INFO:
-            self.log(logging.INFO, message=message, trace=trace, code=code)
+        self.log(logging.INFO, message=message, trace=trace, code=code)
 
     def warning(self, message, trace=None, code=None):
-        if self.log_level <= logging.WARNING:
-            self.log(logging.WARNING, message=message, trace=trace, code=code)
+        self.log(logging.WARNING, message=message, trace=trace, code=code)
 
     def error(self, message, trace=None, code=None):
-        if self.log_level <= logging.ERROR:
-            self.log(logging.ERROR, message=message, trace=trace, code=code)
+        self.log(logging.ERROR, message=message, trace=trace, code=code)
 
     def critical(self, message, trace=None, code=None):
-        if self.log_level <= logging.CRITICAL:
-            self.log(logging.CRITICAL, message=message, trace=trace, code=code)
+        # if self.log_level <= logging.CRITICAL:
+        self.log(logging.CRITICAL, message=message, trace=trace, code=code)
 
     def log(self, level, message, trace=None, code=None):
-        entry = LogEntry(
-                    request_uuid=self.uuid,
-                    offset=int(time.time() * 1000) - self.epoch_start_ms,
-                    level=level,
-                    message=message,
-                    trace=trace,
-                    code=code
-                )
-                
+        if 'DEFAULT' == self.log_mode:
+            if self.log_level <= level:
+                entry = LogEntry(
+                            request_uuid=self.uuid,
+                            offset=int(time.time() * 1000) - self.epoch_start_ms,
+                            level=level,
+                            message=message,
+                            trace=trace,
+                            code=code
+                        )
+        elif 'TRIGGER' == self.log_mode:
+            if self.log_triggered:
+                entry = LogEntry(
+                        request_uuid=self.uuid,
+                        offset=int(time.time() * 1000) - self.epoch_start_ms,
+                        level=level,
+                        message=message,
+                        trace=trace,
+                        code=code
+                    )
+            else:
+                self.log_queue.append({
+                    'offset': int(time.time() * 1000) - self.epoch_start_ms,
+                    'level': level,
+                    'message': message,
+                    'trace': trace,
+                    'code': code
+                })
+                if self.log_level <= level:
+                    self.log_queue_write()
+        else:
+            raise Exception('Invalid log_mode')
     
+
+    def log_queue_write(self):
+        for l in self.log_queue:
+            entry = LogEntry(
+                request_uuid=self.uuid,
+                offset=l['offset'],
+                level=l['level'],
+                message=l['message'],
+                trace=l['trace'],
+                code=l['code'],
+                    )
+        self.log_queue = []
+        self.log_triggered = True

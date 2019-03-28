@@ -1,15 +1,14 @@
 from sqlalchemy import orm
 
 from flask_cot.db import db
+from flask_cot.db.mixins import TimestampMixin, CRUDMixin
 
 
-class LeaderboardDb(db.Model):
+class LeaderboardDb(TimestampMixin, CRUDMixin, db.Model):
     """docstring for Leaderboard."""
 
-    def __init__(self):
-        super(LeaderboardDb, self).__init__()
-
-    __tablename__ = 'leaderboards'
+    __abstract__ = True
+    __base_tablename__ = 'leaderboards'
     id = db.Column(db.CHAR(36), nullable=False, primary_key=True)
     organisation_id = db.Column(db.CHAR(36), nullable=True)
     owner_id = db.Column(db.CHAR(36), nullable=True)
@@ -32,9 +31,3 @@ class LeaderboardDb(db.Model):
     @orm.reconstructor
     def init_on_load(self):
         pass
-
-    def get_by_org(org_id):
-        return LeaderboardDb.query.filter_by(organisation_id=org_id).all()
-
-    def get_by_id(id):
-        return LeaderboardDb.query.filter_by(id=id).first()

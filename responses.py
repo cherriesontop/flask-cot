@@ -51,6 +51,28 @@ def jsonapi_internal_error(e):
     )
     
 
+def jsonapi_errors_constructor(
+        detail,
+        manual_doc,
+        manual_code,
+        status=400,
+        source=None
+        ):
+    err_messages = {
+        'errors': []
+    }
+    err_messages['errors'].append(
+        {
+            'detail': detail,
+            
+        }
+    )
+    return jsonapi_errors(
+            err_messages=err_messages,
+            status=status,
+            manual_doc=manual_doc,
+            manual_code=manual_code
+    )
 
 def jsonapi_errors(
         err_messages,       # The error exception from marshmallow

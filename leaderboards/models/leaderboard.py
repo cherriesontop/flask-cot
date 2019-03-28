@@ -5,6 +5,7 @@ import flask_cot.exceptions as Exceptions
 from sqlalchemy import and_, text
 from flask_cot.db.models import BaseModel
 
+
 class Leaderboard(BaseModel):
     """docstring for Leaderboard.
 
@@ -22,7 +23,7 @@ class Leaderboard(BaseModel):
     """
     def __init__(self, id=None):
         super(Leaderboard, self).__init__()
-        self._db_model = LeaderboardDb
+        self._db_model = self._get_db_model(LeaderboardDb)
         self.reset()
         if id:
             self.load(id)
@@ -98,7 +99,7 @@ class Leaderboard(BaseModel):
             text('created ' + self.data['_pref_created_direction'])
         )
 
-        objs = LeaderboardEntryDb.query.filter(
+        objs = self._db_model.query.filter(
                 and_(*filter_group)
             )\
             .order_by(*order_group)\

@@ -12,6 +12,7 @@ class LogRequestDb(db.Model):
     
     id = db.Column(db.INTEGER(), primary_key=True, autoincrement=True)
     container_uuid = db.Column(db.CHAR(36))
+    user_id = db.Column(db.CHAR(36))
     request_uuid = db.Column(db.CHAR(36))
     epoch_start = db.Column(db.INTEGER(), default=time.time)
     duration_ms = db.Column(db.INTEGER(), default=0)
@@ -28,7 +29,7 @@ class LogRequestDb(db.Model):
     accounting_cost = db.Column(db.INTEGER(), default=1)
     accounting_code = db.Column(db.VARCHAR(45), default=None)
     log_max_level = db.Column(db.INTEGER(), default=0)
-    
+    investigation_id = db.Column(db.INTEGER(), default=0)
     def __repr__(self):
         return '<LogRequest id=%r>' % self.id
 
@@ -45,6 +46,7 @@ class LogRequest(BaseModel):
     def create_new(
                 self,
                 container_uuid,
+                user_id,
                 request_uuid,
                 endpoint,
                 method,
@@ -66,7 +68,8 @@ class LogRequest(BaseModel):
             request_query_string=query_string,
             request_post=post,
             request_data=data,
-            request_url=url
+            request_url=url,
+            user_id=user_id
         )
         try:
             db.session.add(self.obj)
@@ -75,14 +78,19 @@ class LogRequest(BaseModel):
             db.session.rollback()
             # TODO: distress
 
-    def mark_complete(self, status_code, duration_ms, log_max_level):
+    def mark_complete(
+            self, status_code, duration_ms, log_max_level, 
+            investigation_id
+                ):
         self.obj.duration_ms = duration_ms
         self.obj.status_code = str(status_code)
-        self.log_max_level = log_max_level
+        self.obj.log_max_level = log_max_level
+        self.obj.investigation_id = investigation_id
         try:
             db.session.add(self.obj)
             db.session.commit()
         except Exception:
+            print('Rollback')
             db.session.rollback()
             # TODO: distress
 

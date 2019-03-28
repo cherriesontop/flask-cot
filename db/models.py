@@ -1,4 +1,4 @@
-import json
+import simplejson
 import sys
 from flask import current_app
 import inspect
@@ -25,7 +25,7 @@ class BaseModel():
             self.data = self.obj.to_dict()
             if "master_metadata" in self.data and self.data['master_metadata']:
                 self.data['master_metadata'] =\
-                    json.loads(self.data["master_metadata"])
+                    simplejson.loads(self.data["master_metadata"], use_decimal=True)
             return True
         else:
             return None

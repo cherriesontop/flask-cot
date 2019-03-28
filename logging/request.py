@@ -2,7 +2,7 @@ import uuid
 import time
 import simplejson
 import logging
-from flask import current_app, request
+from flask import current_app, request, g
 from .models.log_request import LogRequest
 from .models.log_entry import LogEntry
 
@@ -16,6 +16,11 @@ class CotRequest():
         self.log_counter = 0
         self.log_queue = []
         self.log_triggered = False
+        self.investigation_id = 0
+        if 'jwtauth' in g:
+            self.user_id = g.jwtauth.user_id
+        else:
+            self.user_id = None
 
         if 'COT_LOGGER_MODE' in current_app.config:
             self.log_mode = current_app.config['COT_LOGGER_MODE']
@@ -39,6 +44,7 @@ class CotRequest():
 
         self.log_object.create_new(
             container_uuid=current_app.config['cot_logging_container_uuid'],
+            user_id=self.user_id,
             request_uuid=self.uuid,
             endpoint=request.endpoint,
             method=request.method,
@@ -58,7 +64,8 @@ class CotRequest():
         self.log_object.mark_complete(
           status_code=response.status_code,
           duration_ms=duration_ms,
-          log_max_level=self.log_max_level
+          log_max_level=self.log_max_level,
+          investigation_id=self.investigation_id
         )
 
     def debug(self, message, trace=None, code=None):
@@ -66,6 +73,10 @@ class CotRequest():
 
     def info(self, message, trace=None, code=None):
         self.log(logging.INFO, message=message, trace=trace, code=code)
+
+    def investigate(self, message, trace=None, code=None, investigation_id=1):
+        self.investigation_id = investigation_id
+        self.log(25, message=message, trace=trace, code=code, force_trigger=True)
 
     def warning(self, message, trace=None, code=None):
         self.log(logging.WARNING, message=message, trace=trace, code=code)
@@ -77,9 +88,12 @@ class CotRequest():
         # if self.log_level <= logging.CRITICAL:
         self.log(logging.CRITICAL, message=message, trace=trace, code=code)
 
-    def log(self, level, message, trace=None, code=None):
+    def log(self, level, message, trace=None, code=None, force_trigger=False):
+        if level > self.log_max_level:
+            print('Increase level')
+            self.log_max_level = level
         if 'DEFAULT' == self.log_mode:
-            if self.log_level <= level:
+            if self.log_level <= level or force_trigger:
                 entry = LogEntry(
                             request_uuid=self.uuid,
                             offset=int(time.time() * 1000) - self.epoch_start_ms,
@@ -106,7 +120,7 @@ class CotRequest():
                     'trace': trace,
                     'code': code
                 })
-                if self.log_level <= level:
+                if self.log_level <= level or force_trigger:
                     self.log_queue_write()
         else:
             raise Exception('Invalid log_mode')

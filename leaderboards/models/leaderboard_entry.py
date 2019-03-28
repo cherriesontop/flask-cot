@@ -10,7 +10,7 @@ class LeaderboardEntry(BaseModel):
     """docstring for LeaderboardEntry."""
     def __init__(self, id=None):
         super(LeaderboardEntry, self).__init__()
-        self._db_model = LeaderboardEntryDb
+        self._db_model = self._get_db_model(LeaderboardEntryDb)
         self.reset()
         if id:
             self.load(id)
@@ -49,7 +49,7 @@ class LeaderboardEntry(BaseModel):
             }
         )
         # TODO: add verification
-        new = LeaderboardEntryDb(
+        new = self._db_model(
             id=self.id,
             leaderboard_id=leaderboard_id,
             _dim_1=dim_1,
@@ -118,7 +118,7 @@ class LeaderboardEntry(BaseModel):
 
         order_group.append(text('created ' + _pref_created_direction))
 
-        c = LeaderboardEntryDb.query.filter(
+        c = self._db_model.query.filter(
                 and_(*filter_group)
             )\
             .order_by(*order_group)\
@@ -218,7 +218,7 @@ class LeaderboardEntry(BaseModel):
                     )
                 )
             )
-            objs = LeaderboardEntryDb.query.filter(
+            objs = self._db_model.query.filter(
                     and_(*filter_group)
                 ).order_by(
                     *order_group
@@ -301,7 +301,7 @@ class LeaderboardEntry(BaseModel):
         order_group.append(
             text('created ' + _pref_created_direction)
         )
-        objs = LeaderboardEntryDb.query.filter(
+        objs = self._db_model.query.filter(
                 and_(*filter_group)
             ).order_by(
                 *order_group
@@ -351,3 +351,13 @@ class LeaderboardEntry(BaseModel):
             return ' DESC '
         else:
             return ' ASC '
+
+    def update_scores(self, score_a=None, score_b=None, auto_reload=False):
+        if score_a:
+            self.obj.score_a = score_a
+            self.data['score_a'] = score_a
+        if score_b:
+            self.obj.score_b = score_b
+            self.data['score_b'] = score_b
+        db.session.add(self.obj)
+        db.session.commit()

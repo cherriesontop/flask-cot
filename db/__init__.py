@@ -12,7 +12,11 @@ class CotModel(Model):
         objj = {}
         for key in keys:
             trimed_key = str(key)[offset:]
-            objj[trimed_key] = self.__dict__[trimed_key]
+            if trimed_key in self.__dict__:
+                objj[trimed_key] = self.__dict__[trimed_key]
+            else:
+                #print("\nUnable to find trimmed key " + trimed_key + " in " + str(self.to_dict))
+                pass
         return objj
 
     def day_id(epoch=None):
